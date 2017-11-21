@@ -5,9 +5,8 @@
 // Returns the sum of even elements in a Fibonacci sequence
 // which contains length elements
 //
-// length is \in [0, 50]
-//
-// For example:
+// length is \in [0, 49]
+// // For example:
 //  get_even_sum_of_fibonacci_sequence(0) returns 0
 //  get_even_sum_of_fibonacci_sequence(1) returns 0
 //  get_even_sum_of_fibonacci_sequence(5) returns 2
@@ -45,12 +44,14 @@ TEST_F(FibEvenSumTester, zero_length) {
 // 遍历正常情况
 TEST_F(FibEvenSumTester, normal_cases) {
     size_t prev_even_sum = 0;
-    for (size_t len = 1; len <= 50; ++len) {
+    for (size_t len = 1; len < 50; ++len) {
         const size_t your_ans = get_even_sum_of_fibonacci_sequence(len);
         const size_t correct_ans = (fib_sequence_[len-1] & 0x1) == 0 ? \
-                                   prev_even_sum + fib_sequence_[len] : \
+                                   (prev_even_sum + fib_sequence_[len-1]) : \
                                    prev_even_sum;
+        prev_even_sum = correct_ans;
         ASSERT_EQ(correct_ans, your_ans) << "failed on length[" << len << "]";
+        std::cout << correct_ans << std::endl;
     }
 }
 
