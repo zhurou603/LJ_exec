@@ -26,7 +26,7 @@ protected:
         }
     }
     virtual void TearDown() {
-        // do nothing
+        all_prime_numbers_.clear();
     }
     static void SetUpTestCase() {
         // do nothing
