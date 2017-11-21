@@ -4,7 +4,7 @@ ECHO = echo
 
 CXXFLAGS = -g -O0 -std=c++11 -Wall -Werror -pthread
 INCLUDES = -I.  -I${ROOT}/common/third_party/include/
-LDFLAGS = ${ROOT}/common/third_party/lib/libgtest.a
+LDFLAGS = ${ROOT}/common/third_party/lib/libgtest.a -lpthread
 
 MAIN_SRC = main.cpp
 MAIN_OBJ = ${MAIN_SRC:.cpp=.o}
