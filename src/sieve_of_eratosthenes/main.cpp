@@ -16,6 +16,59 @@ std::vector<uint32_t> get_prime_numbers(const uint32_t less_than_value) {
     return std::vector<uint32_t>();
 }
 
+std::vector<uint32_t> wakensky_get_prime_numbers(const uint32_t less_than_value) {
+    if (less_than_value <= 2) {
+        return std::vector<uint32_t>();
+    }
+
+    // 申请内存, 数组下表对应从0开始的整数, 元素值的0/1表示是否被knock out
+    char* flags = (char*)malloc(less_than_value);
+    if (!flags) {
+        std::cerr << "cannot allocate [" <<
+            less_than_value << "] Bytes" << std::endl;
+        return std::vector<uint32_t>();
+    }
+
+    // 初始化
+    memset(flags, 1, less_than_value);
+    flags[0] = 0;
+    flags[1] = 0;
+
+    // 2是最小的素数，开始循环
+    for (size_t idx = 2; idx < less_than_value; ++idx) {
+        if (!flags[idx]) {
+            // 整数idx不是素数
+            continue;
+        }
+
+        // knock out the multiples of idx
+        size_t multiple = idx + idx;
+        while (multiple < less_than_value) {
+            flags[multiple] = 0;
+            multiple += idx;
+        };
+
+        // early termination
+        if (idx * idx > less_than_value - 1) {
+            break;
+        }
+    }
+
+    // 组装结果
+    std::vector<uint32_t> res_vec;
+    for (size_t idx = 0; idx < less_than_value; ++idx) {
+        if (flags[idx]) {
+            res_vec.push_back(idx);
+        }
+    }
+
+    // 释放内存
+    free(flags);
+
+    // 最终返回
+    return res_vec;
+}
+
 class PrimeTester : public ::testing::Test {
 protected:
     virtual void SetUp() {
