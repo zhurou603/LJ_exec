@@ -18,6 +18,27 @@ uint64_t get_even_sum_of_fibonacci_sequence(const size_t length) {
     return 0;
 }
 
+uint64_t wakensky_get_even_sum_of_fibonacci_sequence(const size_t length) {
+    if (length <= 2) {
+        return 0;
+    }
+
+    uint64_t first = 0;
+    uint64_t second = 1;
+    uint64_t even_sum = 0;
+    for (size_t i = 3; i <= length; ++i) {
+        uint64_t new_second = first + second;
+        first = second;
+        second = new_second;
+
+        // 判断偶数
+        if ((second & 0x1) == 0) {
+            even_sum += second;
+        }
+    }
+    return even_sum;
+}
+
 class FibEvenSumTester : public  ::testing::Test {
 protected:
     virtual void SetUp() {
