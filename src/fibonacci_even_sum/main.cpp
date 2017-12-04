@@ -15,7 +15,24 @@
 // https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97
 uint64_t get_even_sum_of_fibonacci_sequence(const size_t length) {
     // make your codes here
-    return 0;
+    if(length <= 2){
+        return 0ull;
+    }
+    else{
+        uint64_t even_sum = 0; 
+        std::vector<uint64_t> f_s(length);
+        f_s[0] = 0;
+        f_s[1] = 1;
+        for(uint64_t i = 2; i < length; ++i){
+            f_s[i] = f_s[i-1] + f_s[i-2];
+        }
+        for(uint64_t j = 0; j < length; ++j){
+            if(f_s[j] % 2 == 0){
+                even_sum += f_s[j];
+            }
+        }
+        return even_sum;
+    }
 }
 
 uint64_t wakensky_get_even_sum_of_fibonacci_sequence(const size_t length) {
@@ -59,7 +76,7 @@ protected:
 
 // 边界情况 : 实参为0
 TEST_F(FibEvenSumTester, zero_length) {
-    ASSERT_EQ(0, get_even_sum_of_fibonacci_sequence(0));
+    ASSERT_EQ(0ull, get_even_sum_of_fibonacci_sequence(0));
 }
 
 // 遍历正常情况
