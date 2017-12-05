@@ -43,6 +43,41 @@ uint64_t str_to_longlong(const std::string& str) {
     return ll;
 }
 
+std::string wakensky_longlong_to_str(const uint64_t integer) {
+    std::string output;
+
+    uint64_t integer_copy = integer;
+    while (integer_copy) {
+        output += (integer_copy % 10) + '0';
+        integer_copy /= 10;
+    };
+
+    // 翻转
+    for (size_t idx = 0; idx < output.size() / 2; ++idx) {
+        // 交换两个变量 (without 第三个临时变量)
+        output[idx]  = output[idx] ^ output[output.size() - idx - 1];
+        output[output.size() - idx - 1] = output[output.size() - idx - 1] ^ output[idx];
+        output[idx]  = output[idx] ^ output[output.size() - idx - 1];
+    }
+
+    return output;
+}
+
+uint64_t wakensky_str_to_longlong(const std::string& str) {
+    uint64_t output = 0;
+    if (str.empty()) {
+        return output;
+    }
+
+    uint64_t power = 1;
+    // 倒着走
+    for (int idx = str.size() - 1; idx >= 0; --idx) {
+        output += (str[idx] - '0') * power;
+        power *= 10;
+    }
+    return output;
+}
+
 TEST(longlong_to_str, small) {
     ASSERT_EQ(std::string("1"), longlong_to_str(1));
     ASSERT_EQ(std::string("22"), longlong_to_str(22));
