@@ -7,7 +7,19 @@
 // longlong_to_str(1234) returns "1234"
 std::string longlong_to_str(const uint64_t integer) {
     // make your codes here
-    return "";
+    std::string str;
+    std::string str_rev;
+    std::string num[10] = {"0","1","2","3","4","5","6","7","8","9"};
+    uint64_t k = 0;
+    for(uint64_t i = 1; i <= integer; i *= 10){
+        k = (integer/i) % 10;
+        str_rev += num[k];
+    }
+    uint64_t len = str_rev.length();
+    for(size_t i = 0; i < len; ++i){
+        str += str_rev[len - (i+1)];
+    }
+    return str;
 }
 
 // Returns longlong for the input string
@@ -19,7 +31,16 @@ std::string longlong_to_str(const uint64_t integer) {
 //  str_to_longlong("1234") returns 1234
 //  str_to_longlong("001234") returns 1234
 uint64_t str_to_longlong(const std::string& str) {
-    return 0;
+    const char *p = str.c_str();
+    uint64_t ll = 0;
+    while(*p == '0'){
+        ++p;
+    }
+    while(p){
+        ll = ll * 10 + ((uint64_t)(*p) - 48);
+        ++p;
+    }
+    return ll;
 }
 
 TEST(longlong_to_str, small) {
@@ -35,14 +56,14 @@ TEST(longlong_to_str, large) {
 }
 
 TEST(str_to_longlong, small) {
-    ASSERT_EQ(1, str_to_longlong("1"));
-    ASSERT_EQ(1, str_to_longlong("01"));
-    ASSERT_EQ(901, str_to_longlong("901"));
+    ASSERT_EQ(1ull, str_to_longlong("1"));
+    ASSERT_EQ(1ull, str_to_longlong("01"));
+    ASSERT_EQ(901ull, str_to_longlong("901"));
 }
 
 TEST(str_to_longlong, large) {
-    ASSERT_EQ(3278965691, str_to_longlong("3278965691"));
-    ASSERT_EQ(9754946231790, str_to_longlong("9754946231790"));
+    ASSERT_EQ(3278965691ull, str_to_longlong("3278965691"));
+    ASSERT_EQ(9754946231790ull, str_to_longlong("9754946231790"));
 }
 
 int main(int argc, char **argv) {
