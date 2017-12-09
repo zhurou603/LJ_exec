@@ -11,7 +11,16 @@
 // get_count_of_one_bits(123456789) returns 16
 size_t get_count_of_one_bits(const uint64_t integer) {
     // make your codes here
-    return 0;
+    uint64_t i = integer;
+    i = (i & 0x5555555555555555) + ((i >> 1) & 0x5555555555555555);
+    i = (i & 0x3333333333333333) + ((i >> 2) & 0x3333333333333333);
+    i = (i & 0xf0f0f0f0f0f0f0f) + ((i >> 4) & 0xf0f0f0f0f0f0f0f);
+    i = (i & 0xff00ff00ff00ff) + ((i >> 8) & 0xff00ff00ff00ff);
+    i = i + (i >> 16);
+    i = i + (i >> 32);
+    size_t p = i & 0x000000000000007f;
+    return p;
+
 }
 
 TEST(count_1_bits, count_1_bits) {
