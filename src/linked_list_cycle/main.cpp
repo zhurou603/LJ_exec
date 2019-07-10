@@ -16,24 +16,24 @@ struct ListNode{
 bool hasCycle(ListNode* head){
 	ListNode* fast = head;
 	ListNode* slow = head;
-	while(fast){
-		if(!fast->next) return false;
+	while (fast) {
+		if (!fast->next)  return false;
 		fast = fast->next->next;
 		slow = slow->next;
-		if(fast == slow) {
+		if (fast == slow) {
 			return true;
 		}
 	}
 	return false;
 }
 
-//测试只有一个结点，结果应要为无环
+/*测试只有一个结点，结果应要为无环*/
 TEST(hasCycle,case1){
 	ListNode* head = new ListNode(0);
 	ASSERT_EQ(hasCycle(head), false) << "single element should has no loop";
 }
 
-//测试有六个结点的无环链表
+/*测试有六个结点的无环链表*/
 TEST(hasCycle,case2){
 	int element[5] = {200, 55, 6, 47, 3};
 	ListNode* head = new ListNode(0);
@@ -47,7 +47,7 @@ TEST(hasCycle,case2){
 	ASSERT_EQ(hasCycle(head), false) << "a normal linked list should has no cycle";
 }
 
-//测试含８个结点的有环链表
+/*测试含８个结点的有环链表*/
 TEST(hasCycle, cast3){
 	int element[7] = {1234, 51234, 6, 47, 3, 66, 4213};
 	ListNode* head = new ListNode(0);
@@ -62,7 +62,7 @@ TEST(hasCycle, cast3){
 			cycle_node = pnew;
 		}
 	}
-	ptemp->next = cycle_node;　//将尾结点与设定的cycle_node相连，形成有环链表
+	ptemp->next = cycle_node; //将尾结点与设定的cycle_node相连，形成有环链表
 	ASSERT_EQ(hasCycle(head), true) << "linked list which has cycle test wrong";
 }
 
