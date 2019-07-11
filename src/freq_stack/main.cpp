@@ -2,7 +2,7 @@
 #include"GTEST.h"
 #include"FreqStack.h"
 
-//在push之前先更新x的出现频率
+//在push之前先更新x的出现频率.
 //压入栈后判断最大频率是否发生变化并更新
 //时间复杂度O(1)，空间复杂度O(1)
 
