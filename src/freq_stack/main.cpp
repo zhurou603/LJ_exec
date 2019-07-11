@@ -4,6 +4,7 @@
 
 //在push之前先更新x的出现频率
 //压入栈后判断最大频率是否发生变化并更新
+//时间复杂度O(1)，空间复杂度O(1)
 
 void FreqStack::push(int x){
 	freq_[x]++;
@@ -13,6 +14,7 @@ void FreqStack::push(int x){
 
 //取出最大频率下最靠近栈顶的整数,并更新该整数的频率
 //若该最大频率已经无数据，则最大频率减１
+//时间复杂度O(1)，空间复杂度O(1)
 
 int FreqStack::pop(){
 	int current_int;
