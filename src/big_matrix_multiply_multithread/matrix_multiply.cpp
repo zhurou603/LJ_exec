@@ -80,7 +80,7 @@ void multhreading_execution(Matrix& result, const Matrix& m1, const Matrix& m2){
 	}
 }
 
-//单线程计算矩阵相乘
+//单线程计算矩阵相乘.
 void multiply(Matrix& result, const Matrix& m1, const Matrix& m2) {
   for (int i = 0; i < max_size; ++i) {
     for (int j = 0; j < max_size; ++j) {
