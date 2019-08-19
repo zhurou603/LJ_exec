@@ -7,15 +7,17 @@
 
 using namespace std;
 
-//生成一个含有100000个int64_t的文件
-void create(string& filename){
+const int data_size = 1000000;
+
+//生成一个含有data_size个int64_t的文件
+bool create(const string& filename){
 	ofstream outfile;
 	//写文件
 	outfile.open(filename,ios::out);
 	//判断文件是否成功打开，若失败则返回
 	if(!outfile.good()){
 		cout << "文件打开错误" << endl;
-		return;
+		return false;
 	}
 	//使用random_engine代替rand()
 	default_random_engine random;
@@ -23,20 +25,26 @@ void create(string& filename){
 	uniform_int_distribution<unsigned> range(1,5000);
 	int64_t a = 0;
 	//数据规模
-	for(int i = 0; i < 1000000; i++){
+	for(int i = 0; i < data_size; i++){
 		a = range(random);
 		outfile << a << "\n";
 	}
 	outfile.close();
+	return true;
 }
 
 //创建十个文件
-void create_ten_file(){
+bool create_ten_file(){
 	string filenumber = "0123456789";
 	for(int i = 0; i < filenumber.size(); i++){
 		string name = (string)("file") + filenumber[i] + ".txt";
-		create(name);
+		bool flag = create(name);
+		if(!flag){
+			cout << "file:" << i << "failed" << endl;
+			return false;
+		}
 	}
+	return true;
 }
 
 //简单排序思路
@@ -65,14 +73,12 @@ void sort_ten_file(){
 	ofstream out;
 	//写入新的文件
 	out.open(outfile_name, ios::out);
+	if(!out){
+		cout << "新文件打开错误！" << endl;
+	}
 	for(int i = 0; i < data.size(); i++){
 		out << data[i] << "\n";
 	}
 	out.close();
 }
 
-int main(){
-	create_ten_file();
-	sort_ten_file();
-	return 0;
-}
