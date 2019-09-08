@@ -1,12 +1,7 @@
-#ifndef FILE_SORT_H
-#define FILE_SORT_H
 #include"file_sort.h"
-#endif
 
-#ifndef GTEST_H
-#define GTEST_H
 #include<gtest/gtest.h>
-#endif
+
 
 TEST(create, try_to_create){
 	string file = "test.txt";
