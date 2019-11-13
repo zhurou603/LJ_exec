@@ -1,0 +1,52 @@
+#include<gtest/gtest.h>
+#include"bst_serialize_v1.h"
+#include<random>
+
+//测试序列化及反序列化int64_t(目前为uint64_t)
+TEST(encode_int, zero_positive){
+//负数不可以
+	vector<int64_t> test = {11564,0,568,4878941,56135};
+	vector<int64_t> test_result = {};	
+	for(int i = 0; i < test.size(); i++){
+		test_result.push_back(decode_int(encode_int(test[i])));
+	}
+	//should be equal
+	ASSERT_EQ(test, test_result) << "序列化整数出错";
+}
+
+TEST(decode_vector, zero_positive){
+  vector<int64_t> test = {45,0,45678,154687,54612478};
+  ASSERT_EQ(test, decode_vector(encode_vector(test)));
+}
+
+//测试序列化和反序列化二叉树
+TEST(serialize_deserialize, less_than_64){
+  //构造1-6层的满二叉树,结点值为0～10000的随机数
+  default_random_engine random;
+  uniform_int_distribution<signed> range(0,10000);
+  for(int i = 0; i <= 7; i++){
+    int number = pow(2,i) - 1;
+    int64_t data[number] = {};
+    for(int j = 0; j < number; j++){
+      int64_t value = range(random);
+      data[j] = value; 
+    }
+    shared_ptr<TreeNode> root = build(data, number, 0);
+    //测试二叉树的前序遍历
+    vector<int64_t> pre_root = {};
+    printpre(pre_root, root);
+    //测试经过序列化与反序列化后的二叉树的前序遍历
+    shared_ptr<TreeNode> result = deserialize(serialize(root));
+    vector<int64_t> pre_test = {};
+    printpre(pre_test, result);
+    ASSERT_EQ(pre_root.size(), pre_test.size());
+    ASSERT_EQ(pre_root, pre_test);
+  }
+
+}
+
+int main(int argc, char** argv){
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
+
