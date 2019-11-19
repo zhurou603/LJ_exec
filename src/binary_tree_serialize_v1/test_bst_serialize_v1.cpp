@@ -2,10 +2,9 @@
 #include"bst_serialize_v1.h"
 #include<random>
 
-//测试序列化及反序列化int64_t(目前为uint64_t)
+//测试序列化及反序列化int64_t
 TEST(encode_int, zero_positive){
-//负数不可以
-	vector<int64_t> test = {11564,0,568,4878941,56135};
+	vector<int64_t> test = {-11564,0,-568,4878941,56135,568,45};
 	vector<int64_t> test_result = {};	
 	for(int i = 0; i < test.size(); i++){
 		test_result.push_back(decode_int(encode_int(test[i])));
@@ -21,10 +20,10 @@ TEST(decode_vector, zero_positive){
 
 //测试序列化和反序列化二叉树
 TEST(serialize_deserialize, less_than_64){
-  //构造1-6层的满二叉树,结点值为0～10000的随机数
+  //构造1-15的满二叉树,结点值为-100000～100000的随机数
   default_random_engine random;
-  uniform_int_distribution<signed> range(0,10000);
-  for(int i = 0; i <= 7; i++){
+  uniform_int_distribution<signed> range(-100000,100000);
+  for(int i = 0; i <= 15; i++){
     int number = pow(2,i) - 1;
     int64_t data[number] = {};
     for(int j = 0; j < number; j++){

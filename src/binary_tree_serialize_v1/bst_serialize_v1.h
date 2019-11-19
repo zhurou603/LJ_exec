@@ -26,14 +26,12 @@ struct Tpair{
 //序列化函数
 string serialize(shared_ptr<TreeNode> root);
 
-void preorder(shared_ptr<TreeNode> root, int64_t& stat_bits, vector<int64_t>& value,
- 				vector<int64_t>& stat, int64_t& count_node);
+void preorder(shared_ptr<TreeNode> root, int64_t& stat_bits, vector<int64_t>& value, vector<int64_t>& stat, int64_t& count_node);
 
 //反序列化二叉树函数
 shared_ptr<TreeNode> deserialize(const string& serialized);
 
-shared_ptr<Tpair> recursive_deserialize(const string& stat_string,
-			 const vector<int64_t>& value, int& value_index, int start);
+shared_ptr<Tpair> recursive_deserialize(const string& stat_string, const vector<int64_t>& value, int& value_index, int start);
 
 
 //序列化反序列化整数
