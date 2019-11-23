@@ -17,9 +17,6 @@ TEST(group_varint_encode,all_case){
 		test.push_back(number);
 	}
 	vector<uint32_t> result = group_varint_decode(group_varint_encode(test));
-	/*for(int i = 0; i < result.size(); i++){
-		ASSERT_EQ(result[i], test[i]) << "wrong at  " << i;
-	}*/
 	ASSERT_EQ(test, result);
 }
 
