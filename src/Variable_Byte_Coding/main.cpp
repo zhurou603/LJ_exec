@@ -3,35 +3,33 @@
 #include<vector>
 #include<algorithm>
 #include<gtest/gtest.h>
+#include<random>
 
 using namespace std;
 
-//对单个uint32_t进行variable Byte coding
+//对单个uint32_t进行variable Byte coding/home/zhurou603/桌面/practice/LJ_exec/src/bst_serialize/build.cpp
 //从低位向高位每次取7位push_back至result中
 //第一个Byte的第八位为１,作为标志位
 string encode_number(uint32_t n){
-	vector<char> result;
 	char current_byte;
+	string byte;
 	while (1) {
-		current_byte = n % 128;
-		result.push_back(current_byte);
+		current_byte = n & 0x7f;
+		byte = current_byte + byte;
 		if (n < 128) break;
-		n = n / 128;
+		n = n >> 7;
 	}
-	result[0] += 128;
+	byte[byte.size()-1] += 128;
 	//将每个char(8位)倒序放入string容器中
-	string byte = "";
-  for (int i = result.size() - 1; i >= 0; i--) {
-		byte += result[i];
-	}
 	return byte;
 }
 
 //将vector<uint32_t>整数流序列化
 //返回string,string中每一个char代表一个Byte
 string encode(const vector<uint32_t>& in_sequence){
-	string serialized_integers = "";	
-	for (int i = 0; i < in_sequence.size(); i++) {
+	string serialized_integers;
+	const int size = in_sequence.size();
+	for (int i = 0; i < size; i++) {
 		serialized_integers += encode_number(in_sequence[i]);
 	}
 	return serialized_integers;
@@ -49,9 +47,9 @@ vector<uint32_t> decode(const string& serialized_integers){
 		unsigned char current_byte = serialized_integers[index];
 		uint32_t part = (uint32_t)current_byte;
 		if (part < 128) {
-			current_number = 128*current_number + part;
+			current_number = (current_number << 7) + part;
 		}else {
-			current_number = 128*current_number + (part - 128);
+			current_number = (current_number << 7) + (part - 128);
 			numbers.push_back(current_number);
 			current_number = 0;
 		}
@@ -105,6 +103,19 @@ TEST(decode,case3){
 	//对应vector
 	vector<uint32_t> ans = {1231,226,65,0,1231,78675};
 	ASSERT_EQ(decode(test_string), ans);
+}
+
+//产生100000的(0,100000000)的随机整数进行测试
+TEST(decode,random){
+	default_random_engine random;
+	uniform_int_distribution<unsigned> range(0,100000000);
+	vector<uint32_t> test;
+	uint32_t number = 0;
+	for(int i = 0; i < 100000; i++){
+		number = range(random);
+		test.push_back(number);
+	}
+	ASSERT_EQ(test, decode(encode(test)));
 }
 
 int main(int argc, char** argv){
