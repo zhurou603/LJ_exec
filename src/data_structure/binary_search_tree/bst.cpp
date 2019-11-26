@@ -1,5 +1,4 @@
 #include"bst.h"
-#include<gtest/gtest.h>
 
 //构造,初始化根结点
 template<typename T>
