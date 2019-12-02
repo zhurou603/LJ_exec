@@ -1,5 +1,4 @@
 #include"bst.h"
-#include<gtest/gtest.h>
 
 //析构，清空所有结点后析构
 template<typename T>

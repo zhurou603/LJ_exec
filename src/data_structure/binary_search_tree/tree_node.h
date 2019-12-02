@@ -4,10 +4,8 @@
 template<typename T>
 struct TreeNode{
 	T val;
-	//size_t duplicate;
 	TreeNode* left;
 	TreeNode* right;
-	//TreeNode(T value) : val(value), duplicate(1), left(nullptr), right(nullptr) {}
 	TreeNode(T value) : val(value), left(nullptr), right(nullptr) {}
 };
 
