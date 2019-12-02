@@ -1,10 +1,5 @@
 #include"bst.h"
-
-//构造,初始化根结点
-template<typename T>
-BinarySearchTree<T>::BinarySearchTree(){
-	root_ = nullptr;
-}
+#include<gtest/gtest.h>
 
 //析构，清空所有结点后析构
 template<typename T>
@@ -93,7 +88,7 @@ TreeNode<T>* BinarySearchTree<T>::erase(TreeNode<T>* node, const T& value){
 
 //BST中最大值,树中最右值
 template<typename T>
-T BinarySearchTree<T>::max(){
+T BinarySearchTree<T>::max() const{
 	if(!root_) throw "without max because tree is empty";
 	TreeNode<T>* find_max = root_;
 	while(find_max->right){
@@ -104,7 +99,7 @@ T BinarySearchTree<T>::max(){
 
 //BST中最小值,树中最左值
 template<typename T>
-T BinarySearchTree<T>::min(){	
+T BinarySearchTree<T>::min() const{	
 	if(!root_) throw "without min because tree is empty";
 	TreeNode<T>* find_min = root_;
 	while(find_min->left){
@@ -115,7 +110,7 @@ T BinarySearchTree<T>::min(){
 
 //lower_bound,第一个大于等于value结点的值
 template<typename T>
-T BinarySearchTree<T>::lower_bound(const T& value){
+T BinarySearchTree<T>::lower_bound(const T& value) const{
 	TreeNode<T>* tree_root = root_;
 	TreeNode<T>* result = lower_bound(tree_root, value);
 	if(!result) throw "所有结点均小于value";
@@ -123,7 +118,7 @@ T BinarySearchTree<T>::lower_bound(const T& value){
 }
 
 template<typename T>
-TreeNode<T>* BinarySearchTree<T>::lower_bound(TreeNode<T>* node, const T& value){
+TreeNode<T>* BinarySearchTree<T>::lower_bound(TreeNode<T>* node, const T& value) const{
 	if(!node) return nullptr;
 	if(node->val == value) return node;
 	//如果该结点的值小于value，那么向右搜索
@@ -136,7 +131,7 @@ TreeNode<T>* BinarySearchTree<T>::lower_bound(TreeNode<T>* node, const T& value)
 
 //upper_bound,第一个大于等于value结点的值
 template<typename T>
-T BinarySearchTree<T>::upper_bound(const T& value){
+T BinarySearchTree<T>::upper_bound(const T& value) const{
 	TreeNode<T>* tree_root = root_;
 	TreeNode<T>* result = upper_bound(tree_root, value);
 	if(!result) throw "所有结点均小于等于value";
@@ -144,7 +139,7 @@ T BinarySearchTree<T>::upper_bound(const T& value){
 }
 
 template<typename T>
-TreeNode<T>* BinarySearchTree<T>::upper_bound(TreeNode<T>* node, const T& value){
+TreeNode<T>* BinarySearchTree<T>::upper_bound(TreeNode<T>* node, const T& value) const{
 	if(!node) return nullptr;
 	//如果该结点的值小于value，那么向右搜索
 	if(node->val <= value) return upper_bound(node->right, value);

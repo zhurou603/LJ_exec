@@ -11,14 +11,14 @@ template<typename T>
 class BinarySearchTree{
  public:
 	//构造
-	BinarySearchTree();
+	BinarySearchTree() : root_(nullptr) {};
 	//析构
-	~BinarySearchTree();
+	virtual ~BinarySearchTree();
 	//只读接口
-	T max();
-	T min();
-	T lower_bound(const T& value);
-	T upper_bound(const T& value);
+	T max() const;
+	T min() const;
+	T lower_bound(const T& value) const;
+	T upper_bound(const T& value) const;
 	//可写接口
 	void insert(const T& value);
 	void erase(const T& value);
@@ -30,8 +30,8 @@ class BinarySearchTree{
 	TreeNode<T>* root_;
 	TreeNode<T>* insert(TreeNode<T>* node, const T& value);
 	TreeNode<T>* erase(TreeNode<T>* node, const T& value);
-	TreeNode<T>* lower_bound(TreeNode<T>* node, const T& value);
-	TreeNode<T>* upper_bound(TreeNode<T>* node, const T& value);
+	TreeNode<T>* lower_bound(TreeNode<T>* node, const T& value) const;
+	TreeNode<T>* upper_bound(TreeNode<T>* node, const T& value) const;
 	void postorder_clear(TreeNode<T>* node);
 };
 
