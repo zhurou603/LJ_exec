@@ -14,54 +14,52 @@ using namespace std;
 //要读取的文件
 const string file_name= "file.txt";
 const string write_name = "output.txt";
-//每次读200Bytes
-const size_t BUFFER_SIZE = 200;
 
-//将文件以每次200Byte读入vector
-vector<string> read_file(const string& file_name){
+string read_file(const string& file_name){
 	//打开文件,以只读权限打开	
 	int fd = open(file_name.c_str(), O_RDONLY);
-	if(fd == -1){
+	if(-1 == fd){
 		cout << "open file " << file_name << " failed" << endl;
 		exit(1);
 	}
 	//读取文件
-	//length为200或小于200的字符串
-	vector<string> data;
-	char buf[BUFFER_SIZE];
-	memset(buf,0,sizeof(buf));
 	ssize_t ret = 0;
-	while(ret = read(fd, buf, BUFFER_SIZE) != 0){
+	//get size
+	struct stat st;
+	if(fstat(fd, &st)){
+		cout << "get information failed" << endl;
+		exit(1);	
+	}
+	ssize_t len = st.st_size;
+	//申请一块len+1长度空间(0,len-1)放文件，len放'\0'
+	char* buf = (char*)malloc(sizeof(char)*(len+1));
+	buf[len] = '\0';
+	//保存指针，读取所有文件数据到file
+	char* file = buf;
+	while(len != 0 && (ret = read(fd, buf, len)) != 0){
 		if(ret == -1){
-			cout << "出错" << endl;
+			if(errno == EINTR){
+				continue;			
+			}
 			perror("read");
 			break;
 		}
-		data.push_back(buf);
-		memset(buf,0,sizeof(buf));
+		len -= ret;
+		buf += ret;
 	}
-	return data;
+	
+	return file;
 }
 
 //完成分片和去重
-set<string> slice(vector<string>& data){
-	vector<string> sliced_data;	
+set<string> slice(string& data){
+	set<string> sliced_data;	
 	string element;
-	const size_t size = data.size();
-	for(size_t i = 0; i < size; i++){
-		istringstream tokens(data[i]);
-		while(getline(tokens, element)){
-			sliced_data.push_back(element);
-		}
-		//如果最后一个元素不是完整一行，则加入下一次读的数据
-		//特别的，最后一次读入的数据最后一个元素一定是完整的一行,所以不会越界
-		if(data[i][data[i].size()-1] != '\n'){
-			data[i+1] = *sliced_data.end() + data[i+1];
-			sliced_data.pop_back();
-		}
+	istringstream tokens(data);
+	while(getline(tokens, element,'\n')){
+		sliced_data.insert(element+"\n");
 	}
-	set<string> unique{sliced_data.begin(), sliced_data.end()};
-	return unique;
+	return sliced_data;
 }
 
 //将结果写入文件
@@ -74,20 +72,18 @@ int write_file(const set<string>& sliced, const string& file_name){
 	}
 	//遍历每行不重复的内容
 	ssize_t len = 0;
-	set<string>::iterator it;
-	for(it = sliced.begin(); it != sliced.end(); it++){
+	for(auto it = sliced.begin(); it != sliced.end(); it++){
 		len = write(fd, (*it).c_str(), (*it).length());
-		write(fd,"\n",1);
-		if(len < 0){
-			cout << "wrong" << endl;			
-			break;
+		if(len <= 0){
+			cout << "write failed" << endl;
+			exit(1);
 		}
 	}
 	return fd;
 }
 
 int main(){
-	vector<string> data = read_file(file_name);
+	string data = read_file(file_name);
 	set<string> sliced = slice(data);
 	write_file(sliced,write_name);
 	return 0;
