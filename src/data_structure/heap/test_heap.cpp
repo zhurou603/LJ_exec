@@ -4,7 +4,7 @@
 
 TEST(Heap, all_three_function){
 	vector<float> data = {56,-45,1,83,0,68,-6};
-	Heap<float, greater<float>> test = Heap<float, greater<float>>(data.size());
+	Heap<float, greater<float>> test = Heap<float, greater<float>>();
 	for(size_t i = 0; i < data.size(); i++){
 		test.push(data[i]);
 	}
