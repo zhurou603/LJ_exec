@@ -12,7 +12,22 @@ TEST(add, all_case){
 	}
 }
 
+
+TEST(multiply, case1){
+	vector<vector<string>> test = {{"0","0"},{"909878","999"},\
+				{"123094","4723"},{"6432","8127"}};
+
+	vector<string> answer = {"0","908968122","581372962","52272864"};
+	for(int i = 0; i < test.size(); i++){
+		ASSERT_EQ((BigInt(test[i][0]) * BigInt(test[i][1])).get_val(), answer[i]);
+	}
+}
+
+
+
 int main(int argc, char** argv){
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
+
+

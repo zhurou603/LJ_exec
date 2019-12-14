@@ -31,3 +31,29 @@ BigInt BigInt::operator +(const BigInt& b) const{
 	reverse(result.begin(), result.end());
 	return BigInt(result);
 }
+
+//大整数相乘
+BigInt BigInt::operator *(const BigInt& b) const{
+	string val2(b.get_val());
+	const int len1 = val_.length();
+	const int	len2 = val2.length();
+	string result(len1+len2, '0');
+	int tmp = 0;
+	//竖式乘法
+	for(int i = len1-1; i >= 0; i--){
+		for(int j = len2-1; j >= 0; j--){
+			//取进位
+			tmp = result[i+j+1] - '0';
+			//乘法
+			tmp += (val_[i] - '0')*(val2[j] - '0');
+			//update
+			result[i+j+1] = (tmp % 10) + '0';
+			result[i+j] += tmp / 10;
+		}
+	}
+	//取出非0part
+	for(int i = 0; i < result.length(); i++){
+		if('0' != result[i]) return BigInt(result.substr(i));
+	}
+	return BigInt("0");
+}
