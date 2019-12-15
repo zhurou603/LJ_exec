@@ -15,7 +15,7 @@ class BasicAlgorithm{
 	void insertion_sort(vector<int64_t>* data);
 	int64_t top_k(vector<int64_t>* data, int k);
 	//void intro_sort(vector<int64_t>* data);
-	//int64_t binary_search(const vector<int64_t>& data);
+	int binary_search(const vector<int64_t>& data, int64_t target);
 	//int64_t exponential_search(const vector<int64_t>& data);
  
  private:

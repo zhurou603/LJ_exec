@@ -56,6 +56,18 @@ TEST(topk, legal_input){
 	}
 }
 
+//search
+TEST(search, binary_search){
+	vector<int64_t> data{-234,-127,-5,0,18,64,349,8246,320096};
+	vector<int64_t> test{-999,-127,0,64,9999,320096,5489741};
+	vector<int> answer{-1,1,3,5,-1,8,-1};
+	BasicAlgorithm algorithm;
+	for(int i = 0; i < test.size(); i++){
+		int index = algorithm.binary_search(data,test[i]);
+		ASSERT_EQ(index, answer[i]);
+	}
+}
+
 int main(int argc, char** argv){
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

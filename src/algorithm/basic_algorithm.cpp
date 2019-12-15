@@ -96,6 +96,22 @@ void BasicAlgorithm::merge(vector<int64_t>* data, vector<int64_t>* help, int low
 	}
 }
 
+//二分查找
+//描述为：搜索sorted 升序vector中是否存在target，如果存在则返回其下标index，否则返回-1
+int BasicAlgorithm::binary_search(const vector<int64_t>& data, int64_t target){
+	int low = 0;
+	int high = data.size() - 1;
+	while(low < high){
+		int mid = low + (high - low) / 2;
+		if(data[mid] < target){
+			low = mid + 1;
+		}else{
+			high = mid;
+		}
+	}
+	if(data[low] == target) return low;
+	return -1;
+}
 
 
 
