@@ -8,7 +8,7 @@ using namespace std;
 
 TEST(my_sqrt, compare_with_stl){
 	default_random_engine random;
-	uniform_real_distribution<> range(0.0,10000.0);
+	uniform_real_distribution<> range(0,10000);
 	uint32_t number = 0;
 	for(int i = 0; i < 10; i++){
 		number = range(random);
