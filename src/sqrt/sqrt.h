@@ -5,23 +5,6 @@ using namespace std;
 //set presision 10e-3
 const float EPSINON = 0.001;
 
-
-// float my_sqrt(uint32_t value){
-// 	float low = 0;
-// 	float high = value;
-// 	float mid = value;
-// 	while((high - low) > EPSINON){
-// 		mid = low + (high - low) / 2;
-// 		//如果还未收敛，则二分
-// 		if(mid*mid > value){
-// 			high = mid;	
-// 		}else{
-// 			low = mid;
-// 		}
-// 	}
-// 	return mid;
-// }
-
 float my_sqrt(uint32_t value){
   //转化为单精度浮点
   float f_val = (float)value;
@@ -39,4 +22,20 @@ float my_sqrt(uint32_t value){
   y = y*(1.5f - (xhalf*y*y));
   //y为平方根倒数，所以返回f_val*y为平方根
   return f_val*y;
+}
+
+float my_sqrt_2(uint32_t value){
+	float low = 0;
+	float high = value;
+	float mid = value;
+	while((high - low) > EPSINON){
+		mid = low + (high - low) / 2;
+		//如果还未收敛，则二分
+		if(mid*mid > value){
+			high = mid;	
+		}else{
+			low = mid;
+		}
+	}
+	return mid;
 }
