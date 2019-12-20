@@ -65,6 +65,8 @@ TEST(search, binary_search){
 	for(int i = 0; i < test.size(); i++){
 		int index = algorithm.binary_search(data,test[i]);
 		ASSERT_EQ(index, answer[i]);
+		index = algorithm.exponential_search(data,test[i]);
+		ASSERT_EQ(index, answer[i]);
 	}
 }
 

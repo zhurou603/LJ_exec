@@ -99,8 +99,11 @@ void BasicAlgorithm::merge(vector<int64_t>* data, vector<int64_t>* help, int low
 //二分查找
 //描述为：搜索sorted 升序vector中是否存在target，如果存在则返回其下标index，否则返回-1
 int BasicAlgorithm::binary_search(const vector<int64_t>& data, int64_t target){
-	int low = 0;
-	int high = data.size() - 1;
+	return binary_search(data, target, 0, data.size()-1);
+}
+
+int BasicAlgorithm::binary_search(const vector<int64_t>& data, int64_t target, int low, int high){
+	if(0 == data.size()) return -1;
 	while(low < high){
 		int mid = low + (high - low) / 2;
 		if(data[mid] < target){
@@ -111,6 +114,19 @@ int BasicAlgorithm::binary_search(const vector<int64_t>& data, int64_t target){
 	}
 	if(data[low] == target) return low;
 	return -1;
+}
+
+//exponential search
+//原理：从左到右可以在logi次内划分到上界，再在[bound/2,bound]二分搜索
+//优点：非常适用于要找的index很小的情况，在O(1)时间就能找到目标而二分搜索依然要花费O(logn)
+int BasicAlgorithm::exponential_search(const vector<int64_t>& data, int64_t target){
+	int size = data.size();	
+	if(0 == size) return -1;
+	int bound = 1;
+	//划分range
+	while(bound < size && data[bound] < target) bound *= 2;	
+	//wiki实现的是二分搜索在[low,high),现在改写为[low,high]
+	return binary_search(data, target, bound / 2, min(bound, size-1));
 }
 
 
