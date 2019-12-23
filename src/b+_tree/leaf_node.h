@@ -36,7 +36,8 @@ class LeafNode : public Node {
     LeafNode* get_next() const;
   //拿到第一个元素，方便split
   Key first_key() const;
-
+  int get_size() const;
+  
   //可写接口
   //向leaves创建记录并添加,返回当前size以便调整
   int create_and_append(Key key, Value value);
@@ -48,6 +49,21 @@ class LeafNode : public Node {
   void move_half_to(LeafNode* receiver);
   //拷贝
   void copy_half_from(const vector<Pair>& origin_keys);
+  //删除key对应Record,返回删除后size
+  int remove_record(Key key);
+
+
+  //转移所有数据到receiver
+  void move_all_to(LeafNode* receiver, int pos);
+  //从指定keys拷贝数据
+  void copy_all_from(vector<Pair>* data);
+    void move_first_to_end_of(LeafNode* node);
+  void move_last_to_head_of(LeafNode* node);
+  void copy_first_from(Pair first);
+  void set_key_pos(int pos, Key key);
+  void copy_last_from(Pair last, int node_pos);
+  void move_last_to_head_of(LeafNode* node, int node_pos);
+
 
  private:
   vector<Pair> leaves_;

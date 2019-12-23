@@ -23,6 +23,8 @@ class Node{
   Node* get_parent() const{
     return parent_;
   }
+
+  virtual Key first_key() const = 0;
   //protected供子类访问但对外部用户不可见
  protected:
 	int degree_;

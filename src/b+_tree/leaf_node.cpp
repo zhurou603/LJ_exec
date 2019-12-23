@@ -73,3 +73,54 @@ LeafNode* LeafNode::get_next() const{
 Key LeafNode::first_key() const{
   return leaves_.begin()->first;
 }
+
+int LeafNode::remove_record(Key key){
+  //先找到Record,从vector中删除，然后释放
+  auto target = leaves_.begin();
+  while(target != leaves_.end() && target->first != key) target++;
+  Record* target_record = target->second;
+  leaves_.erase(target);
+  delete target_record;
+  return leaves_.size();
+}
+
+int LeafNode::get_size() const{
+  return leaves_.size();
+}
+
+void LeafNode::move_all_to(LeafNode* receiver, int pos){
+  receiver->copy_all_from(&leaves_);
+  leaves_.clear();
+  receiver->set_next(next_);
+}
+
+void LeafNode::copy_all_from(vector<Pair>* data){
+  for(int i = 0; i < (*data).size(); i++){
+    leaves_.push_back((*data)[i]);
+  }
+}
+
+void LeafNode::move_first_to_end_of(LeafNode* node){
+  node->copy_first_from(leaves_.front());
+  leaves_.erase(leaves_.begin());
+  //删除后需要更新上一层的key
+  static_cast<LeafNode*>(parent_)->set_key_pos(1, leaves_.front().first); 
+}
+
+void LeafNode::copy_first_from(Pair first){
+  leaves_.push_back(first);
+}
+
+void LeafNode::set_key_pos(int pos, Key key){
+  leaves_[pos].first = key;
+}
+
+void LeafNode::move_last_to_head_of(LeafNode* node, int node_pos){
+  node->copy_last_from(leaves_.back(),node_pos);
+  leaves_.pop_back();
+}
+
+void LeafNode::copy_last_from(Pair last, int node_pos){
+    leaves_.insert(leaves_.begin(), last);
+    static_cast<LeafNode*>(parent_)->set_key_pos(node_pos, leaves_.front().first);
+}

@@ -26,6 +26,7 @@ class InterNode : public Node{
   int min_size() const;
   Node* get_first_child() const;
   void print_all() const;
+  int get_size() const;
 
   //可写接口
   void append_element_to_vector(vector<Key>* result);
@@ -42,6 +43,30 @@ class InterNode : public Node{
   void copy_half_from(const vector<Pair>& origin_keys);
   //顺序找到key
   Node* find(Key key);
+  //当root的size为1时，删除与孩子结点的连接并返回孩子结点
+  Node* cut_first_child();
+  //根据Node*找位置
+  int search_node_by_pointer(Node* node);
+  //根据index取元素
+  Node* get_pos_node(int pos);
+  //根据index取key
+  Key get_pos_key(int pos);
+
+  //转移所有数据到receiver
+  void move_all_to(InterNode* receiver, int pos);
+  //从指定keys拷贝数据
+  void copy_all_from(vector<Pair>* data);
+  //删除指定pos元素
+  void erase(int pos);
+  void move_first_to_end_of(InterNode* node);
+  void move_last_to_head_of(InterNode* node);
+  void copy_first_from(Pair first);
+  Key first_key() const;
+  void set_key_pos(int pos, Key key);
+  void copy_last_from(Pair last);
+  void copy_last_from(Pair last, int node_pos);
+  void move_last_to_head_of(InterNode* node, int node_pos);
+  
 
  private:
   vector<Pair> keys_;

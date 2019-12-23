@@ -100,6 +100,7 @@ void BplusTree::print_all(){
   while(leaf){
     leaf->printleaf();
     leaf = leaf->get_next();
+    cout << "一组结束" << endl;
   }
 }
 
@@ -116,3 +117,113 @@ void BplusTree::bfs_key(vector<Key>* result){
     inter->append_child_to_queue(&nodes);
   }
 }
+
+void BplusTree::remove(Key key){
+  if(!root_) return;
+  remove_leaf(key);
+}
+
+void BplusTree::remove_leaf(Key key){
+  //查找如果没有对应LeafNode则删除失败
+  LeafNode* target_leaf = nullptr;
+  Node* node = root_;
+  while(!node->is_leaf()){
+    InterNode* inter = static_cast<InterNode*>(node);
+    node = inter->find(key);
+  }
+  target_leaf = static_cast<LeafNode*>(node);
+  if(!target_leaf) return;
+  //查找是否有对应Record
+  if(!target_leaf->search(key)) return;
+  //如果存在则删除后，返回新size，处理是否underflow
+  int new_size = target_leaf->remove_record(key);
+  if(new_size < target_leaf->min_size()){
+    solve_underflow(target_leaf);
+  }
+}
+
+template<typename T>
+void BplusTree::solve_underflow(T* node){
+  //如果是根结点需要调整(结点数量<2)
+  if(!node->get_parent()){
+    adjust_root();
+    return;
+  }
+  //如果是一般的InterNode or LeafNode
+  //左顾右盼，看是否有可借的元素(类似左旋右旋)
+  //如果没有左兄弟，则看看右边
+  InterNode* parent = static_cast<InterNode*>(node->get_parent());
+  int position = parent->search_node_by_pointer(node);
+  int neighbor_pos = (0 == position) ? 1 : position - 1;
+  //拿到邻居结点
+  T* neighbor = static_cast<T*>(parent->get_pos_node(neighbor_pos));
+  //如果左右都不能借，和parent合并
+  if(node->get_size() + neighbor->get_size() <= node->max_size()){
+    merge(node, neighbor, parent, position);
+  }else{
+    redistribute(node, neighbor, parent, position);
+  }
+}
+
+template<typename T>
+void BplusTree::merge(T* node, T* neighbor, InterNode* parent, int position){
+  //使用邻居的key，因为更小
+  //把node的数据拷贝到neighbor，删除node，至此完成合并
+  if(!position){
+    swap(node, neighbor);
+  }
+  node->move_all_to(neighbor,position);
+  parent->erase(position);
+  delete node;
+  //递归处理
+  if(parent->get_size() < parent->min_size()){
+    solve_underflow(parent);
+  }
+}
+
+template<typename T>
+void BplusTree::redistribute(T* node, T* neighbor, InterNode* parent, int position){
+  //要看是从左边还是右边借
+  //如果向右兄弟借，那么从它的第一个借到node的末尾
+  //如果向左兄弟借，从它的最大值借到node的首部
+  if(!position){
+    neighbor->move_first_to_end_of(node);
+  }else{
+    neighbor->move_last_to_head_of(node,position);
+  }
+}
+
+
+
+
+
+
+
+void BplusTree::adjust_root(){
+  //如果只有InterNode且size为一，释放结点，把孩子结点作为新根
+  if(!root_->is_leaf() && static_cast<InterNode*>(root_)->get_size() == 1){
+    InterNode* old_root = static_cast<InterNode*>(root_);
+    root_ = old_root->cut_first_child();
+    delete old_root;
+  }
+  else if(!static_cast<InterNode*>(root_)->get_size()){
+    delete root_;
+    root_ = nullptr;
+  }
+}
+
+Record* BplusTree::search(Key key){
+  LeafNode* target_leaf = nullptr;
+  Node* node = root_;
+  while(!node->is_leaf()){
+    InterNode* inter = static_cast<InterNode*>(node);
+    node = inter->find(key);
+  }
+  target_leaf = static_cast<LeafNode*>(node);
+  if(!target_leaf) return nullptr;
+  //查找是否有对应Record
+  Record* result = target_leaf->search(key);
+  if(!result) return nullptr;
+  return result;
+}
+
