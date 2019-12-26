@@ -9,16 +9,16 @@ int  LeafNode::max_size() const{
   }
 
 int LeafNode::create_and_append(Key key, Value value){
-  Record* check = search(key);
+  shared_ptr<Record> check = search(key);
   if(!check){
-    Record* new_record = new Record(value);
+    shared_ptr<Record> new_record = make_shared<Record>(value);
     //找到合适的位置插入为了保持有序。
     insert(key, new_record);
   }
   return leaves_.size();
 }
 
-Record* LeafNode::search(Key key){
+shared_ptr<Record> LeafNode::search(Key key){
   auto searching = leaves_.begin();
   while(searching != leaves_.end()){
     if(searching->first == key){
@@ -29,19 +29,19 @@ Record* LeafNode::search(Key key){
   return nullptr;
 }
 
-void LeafNode::insert(Key key, Record* record){
+void LeafNode::insert(Key key, shared_ptr<Record> record){
   //找到第一个大于key的位置插入
   auto searching = leaves_.begin();
   while(searching != leaves_.end() && searching->first < key) searching++;
   leaves_.insert(searching, Pair(key,record));
 }
 
-void LeafNode::set_next(LeafNode* node){
+void LeafNode::set_next(shared_ptr<LeafNode> node){
   next_ = node;
 }
 
   //移动后半部分到新的结点
-void LeafNode::move_half_to(LeafNode* receiver){
+void LeafNode::move_half_to(shared_ptr<LeafNode> receiver){
    receiver->copy_half_from(leaves_);
    int size = leaves_.size();
   for(int i = min_size(); i < size; i++){
@@ -66,7 +66,7 @@ void LeafNode::printleaf() const {
   }
 }
 
-LeafNode* LeafNode::get_next() const{
+shared_ptr<LeafNode> LeafNode::get_next() const{
   return next_;
 }
 
@@ -78,9 +78,8 @@ int LeafNode::remove_record(Key key){
   //先找到Record,从vector中删除，然后释放
   auto target = leaves_.begin();
   while(target != leaves_.end() && target->first != key) target++;
-  Record* target_record = target->second;
+  shared_ptr<Record> target_record = target->second;
   leaves_.erase(target);
-  delete target_record;
   return leaves_.size();
 }
 
@@ -88,7 +87,7 @@ int LeafNode::get_size() const{
   return leaves_.size();
 }
 
-void LeafNode::move_all_to(LeafNode* receiver, int pos){
+/*void LeafNode::move_all_to(LeafNode* receiver, int pos){
   receiver->copy_all_from(&leaves_);
   leaves_.clear();
   receiver->set_next(next_);
@@ -123,4 +122,4 @@ void LeafNode::move_last_to_head_of(LeafNode* node, int node_pos){
 void LeafNode::copy_last_from(Pair last, int node_pos){
     leaves_.insert(leaves_.begin(), last);
     static_cast<LeafNode*>(parent_)->set_key_pos(node_pos, leaves_.front().first);
-}
+}*/
