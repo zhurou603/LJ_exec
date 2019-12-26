@@ -12,19 +12,19 @@ void BplusTree::insert(Key key, Value value){
     //找到对应叶子结点插入
     insert_to_leaf(key, value);
   }
-	/*auto should_free = used.begin();
+	auto should_free = used.begin();
 	while(should_free != used.end()){
 		(*should_free)->free_space();
 		should_free++;
 	}
-	used.clear();*/
+	used.clear();
 }
 
 void BplusTree::insert_empty_tree(Key key, Value value){
 
   //LeafNode* new_leaf = new LeafNode(tree_degree_);
 	shared_ptr<DiskNode> new_leaf = make_shared<DiskNode>(tree_degree_);
-	//used.insert(new_leaf);
+	used.insert(new_leaf);
   //向叶子结点添加一个记录
   new_leaf->create_and_append(key,value);
   //合理的转换，派生类的指针向基类指针
@@ -41,7 +41,7 @@ void BplusTree::insert_to_leaf(Key key, Value value){
     node = inter->find(key);
   }
   find = static_pointer_cast<DiskNode>(node);
-	//used.insert(find);
+	used.insert(find);
   //在叶子结点找到对应record
   shared_ptr<Record> record = find->search(key);
   if(record){
