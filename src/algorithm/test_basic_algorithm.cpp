@@ -8,9 +8,9 @@ TEST(sort, three_algorithm){
 	//data	
 	vector<int64_t> data;
 	default_random_engine random;
-	uniform_int_distribution<signed> range(-100000,100000);
+	uniform_int_distribution<signed> range(0,100000);
 	int64_t number = 0;	
-	for(int i = 0; i < 50000; i++){
+	for(int i = 0; i < 5; i++){
 		number = range(random);
 		data.push_back(number);
 	}
@@ -30,6 +30,10 @@ TEST(sort, three_algorithm){
 	vector<int64_t> insertion_test(data.begin(), data.end());
 	sorting.insertion_sort(&insertion_test);
 	ASSERT_EQ(insertion_test, answer);
+	//radix sort;
+	vector<int64_t> radix_test(data.begin(), data.end());
+	sorting.radix_sort(&radix_test);
+	ASSERT_EQ(radix_test, answer);
 }
 
 TEST(topk, legal_input){

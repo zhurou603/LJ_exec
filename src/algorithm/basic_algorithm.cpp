@@ -129,6 +129,55 @@ int BasicAlgorithm::exponential_search(const vector<int64_t>& data, int64_t targ
 	return binary_search(data, target, bound / 2, min(bound, size-1));
 }
 
+void BasicAlgorithm::radix_sort(vector<int64_t>* data){
+	int64_t pos = 1;
+	int64_t max = *(max_element(data->begin(), data->end()));
+	while(max){
+		counting_sort(data, pos);
+		pos *= 10;
+		max /= 10;
+	}
+}
+
+//对单个整数位的桶排序,0-9（need ten buckets）
+void BasicAlgorithm::counting_sort(vector<int64_t>* data, int64_t pos){
+	//initialization	
+	vector<int> buckets;
+	//十进制
+	buckets.resize(10);
+	//用于复制结果
+	vector<int64_t> output;
+	const int size = data->size();
+	output.resize(size);
+	//distribution
+	for(int i = 0; i < size; i++){
+		cout << (*data)[i] << endl;
+		buckets[((*data)[i] / pos) % 10]++;
+	}
+	//collection
+	for(int i = 1; i < 10; i++){
+		buckets[i] += buckets[i-1];
+	}
+	for(int i = 0; i < size; i++){
+		output[buckets[((*data)[i] / pos) % 10] - 1] = (*data)[i];
+		buckets[((*data)[i] / pos) % 10]--;
+	}
+	for(int i = 0; i < size; i++){
+		(*data)[i] = output[i];
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
