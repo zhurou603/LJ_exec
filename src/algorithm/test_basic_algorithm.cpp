@@ -10,7 +10,7 @@ TEST(sort, three_algorithm){
 	default_random_engine random;
 	uniform_int_distribution<signed> range(0,100000);
 	int64_t number = 0;	
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 1500; i++){
 		number = range(random);
 		data.push_back(number);
 	}
@@ -34,6 +34,10 @@ TEST(sort, three_algorithm){
 	vector<int64_t> radix_test(data.begin(), data.end());
 	sorting.radix_sort(&radix_test);
 	ASSERT_EQ(radix_test, answer);
+	//intro sort
+	vector<int64_t> intro_test(data.begin(), data.end());
+	sorting.intro_sort(&intro_test);
+	ASSERT_EQ(intro_test, answer);
 }
 
 TEST(topk, legal_input){

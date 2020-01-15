@@ -151,14 +151,14 @@ void BasicAlgorithm::counting_sort(vector<int64_t>* data, int64_t pos){
 	output.resize(size);
 	//distribution
 	for(int i = 0; i < size; i++){
-		cout << (*data)[i] << endl;
 		buckets[((*data)[i] / pos) % 10]++;
 	}
 	//collection
 	for(int i = 1; i < 10; i++){
 		buckets[i] += buckets[i-1];
 	}
-	for(int i = 0; i < size; i++){
+	//保证稳定性的一步
+	for(int i = size-1; i >= 0; i--){
 		output[buckets[((*data)[i] / pos) % 10] - 1] = (*data)[i];
 		buckets[((*data)[i] / pos) % 10]--;
 	}
@@ -167,6 +167,42 @@ void BasicAlgorithm::counting_sort(vector<int64_t>* data, int64_t pos){
 	}
 }
 
+void BasicAlgorithm::heap_sort(vector<int64_t>* data){
+	Heap<int64_t,greater<int64_t>> heapsort;
+	for(int i = 0; i < data->size(); i++){
+		heapsort.push((*data)[i]);
+	}
+	for(int i = 0; i < data->size(); i++){
+		(*data)[i] = heapsort.top();
+		heapsort.pop();
+	}
+}
+
+
+void BasicAlgorithm::intro_sort(vector<int64_t>* data){
+	//set max depth to 2*log(n)
+	int max_depth = 2*log(data->size());
+	const int size = data->size();
+	intro_sort(data,0, size-1, max_depth);
+}
+
+
+void BasicAlgorithm::intro_sort(vector<int64_t>* data, int low, int high, int max_depth){
+	if(high-low <= 1) return;	
+	//perform insertion sort when length <= 16
+	if(high-low <= 16){
+		insertion_sort(data);
+	}
+	//when depth increase to max depth do heapsort
+	else if(0 == max_depth){
+		heap_sort(data);
+	}
+	else{
+		int pivot = partition(data, low, high);
+		intro_sort(data, low, pivot-1, max_depth-1);
+		intro_sort(data, pivot+1, high, max_depth-1);
+	}
+}
 
 
 
