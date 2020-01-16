@@ -1,3 +1,5 @@
+#ifndef BLOOM_FILTER_H
+#define BLOOM_FILTER_H
 #include<vector>
 #include<string>
 #include"MurmurHash3.h"
@@ -25,3 +27,5 @@ class BloomFilter{
   int capacity_;
   vector<bool> bits_;
 };
+
+#endif

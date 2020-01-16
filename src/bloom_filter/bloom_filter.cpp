@@ -14,7 +14,6 @@ void BloomFilter::add(const string& input){
   capacity_++;
 }
 
-bool possibly_exist(const string& input);
 //计算哈希值，返回128bit结果存在两个uint64_t中
 uint64_t* BloomFilter::hash(const string& input){
   vector<uint64_t> result;
