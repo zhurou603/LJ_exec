@@ -1,43 +1,44 @@
-# -*- coding:utf-8 -*-
 import numpy as np
 
-class InputLayer(object):
-	def __init__(self,shape):
-		self.shape = shape
+class BaseLayer(object):
+	def __init__(self,input_size = None):
+		self.input_size = input_size
+
+class InputLayer(BaseLayer):
+	def __init__(self,input_size):
+		BaseLayer.__init__(self,input_size)
 		self.data = None
 
-#全连接层
-class FullConnected(object):
-	def __init__(self,pre_size,output_size):
-		self.pre_size = pre_size
+class FullConnected(BaseLayer):
+	def __init__(self,output_size,activation,input_size = None):
+		BaseLayer.__init__(self,input_size)
+		self.built = None
 		self.output_size = output_size
-		self.w = np.random.randn(pre_size,output_size)
-		self.b = np.random.randn(output_size)
-		self.x = None
-		self.dw = None
-		self.db = None
-		self.dx = None
+		self.activation = activation
 
-	def feedforward(self,x):
+	def __call__(self, x, input_size = None, t = None):
+		if self.built is None:
+			self.w = np.random.randn(input_size,self.output_size)
+			self.b = np.random.randn(self.output_size)
+			self.built = True
 		self.x = x
-		return np.dot(x,self.w) + self.b
+		if(t is not None):
+			return self.activation(np.dot(x,self.w) + self.b, t)
+		return self.activation(np.dot(x,self.w) + self.b)
 
-	#y为某一上游传来的偏导数
 	def backward(self,y):
+		y = self.activation.backward(y)
 		trans = self.x.reshape(self.x.shape[0],1)
 		self.dw = np.dot(trans,y.reshape(1,y.shape[0]))
 		self.db = y
 		self.dx = np.dot(y,self.w.transpose())
 		return self.dx
 
-class Sigmoid(object):
-	def __init__(self,input_size):
-		self.input_size = input_size
-		self.x = None
-		self.y = None
-		self.dx = None
+class Sigmoid(BaseLayer):
+	def __init__(self,input_size = None):
+		BaseLayer.__init__(self,input_size)
 
-	def feedforward(self,x):
+	def __call__(self,x):
 		self.x = x
 		self.y = self.sigmoid(x)
 		return self.y
@@ -50,24 +51,20 @@ class Sigmoid(object):
 		#return 1.0/(1.0 + np.exp(-x))
 		return .5 * (1 + np.tanh(.5 * x))
 
-class SoftmaxLoss(object):
-	def __init__(self,input_size):
-		self.input_size = input_size
-		self.y = None
-		self.t = None
+class SoftmaxLoss(BaseLayer):
+	def __init__(self,input_size = None):
+		BaseLayer.__init__(self,input_size)
 		self.loss = None
-		self.x = None
-		self.dx = None
 	
-	def feedforward(self,x,t):
+	def __call__(self,x,t = None):
 		self.x = x
-		y = self.softmax(x)
-		self.y = y
+		self.y = self.softmax(x)
 		self.t = t
-		self.loss = self.crossentropy(y,t)
-		return self.loss
+		if(t is not None):
+			self.loss = self.crossentropy(self.y,self.t)
+		return self.y
 
-	def backward(self):
+	def backward(self,value):
 		self.dx = self.y - self.t
 		return self.dx
 
@@ -78,22 +75,5 @@ class SoftmaxLoss(object):
 	def crossentropy(self,y,t):
 		delta = 1e-7
 		return -np.sum(t * np.log(y+delta))
-			
-
-
-
-
-
-
-
-
-
-
-
-
-		
-
-
-
 
 
