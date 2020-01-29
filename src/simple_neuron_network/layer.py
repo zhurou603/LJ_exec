@@ -15,6 +15,8 @@ class FullConnected(BaseLayer):
 		self.built = None
 		self.output_size = output_size
 		self.activation = activation
+		self.one_batch_dw = 0
+		self.one_batch_db = 0
 
 	def __call__(self, x, input_size = None, t = None):
 		if self.built is None:
@@ -31,6 +33,8 @@ class FullConnected(BaseLayer):
 		trans = self.x.reshape(self.x.shape[0],1)
 		self.dw = np.dot(trans,y.reshape(1,y.shape[0]))
 		self.db = y
+		self.one_batch_dw += self.dw
+		self.one_batch_db += self.db
 		self.dx = np.dot(y,self.w.transpose())
 		return self.dx
 
