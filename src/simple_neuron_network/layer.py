@@ -1,4 +1,5 @@
 import numpy as np
+import my_numpy as mnp
 
 class BaseLayer(object):
 	def __init__(self,input_size = None):
@@ -17,6 +18,7 @@ class FullConnected(BaseLayer):
 		self.activation = activation
 		self.one_batch_dw = 0
 		self.one_batch_db = 0
+		self.calculate = None
 
 	def __call__(self, x, input_size = None, t = None):
 		if self.built is None:
@@ -25,17 +27,17 @@ class FullConnected(BaseLayer):
 			self.built = True
 		self.x = x
 		if(t is not None):
-			return self.activation(np.dot(x,self.w) + self.b, t)
-		return self.activation(np.dot(x,self.w) + self.b)
+			return self.activation(mnp.dot(x,self.w,self.calculate) + self.b, t)
+		return self.activation(mnp.dot(x,self.w,self.calculate) + self.b)
 
 	def backward(self,y):
 		y = self.activation.backward(y)
 		trans = self.x.reshape(self.x.shape[0],1)
-		self.dw = np.dot(trans,y.reshape(1,y.shape[0]))
+		self.dw = mnp.dot(trans,y.reshape(1,y.shape[0]),self.calculate)
 		self.db = y
 		self.one_batch_dw += self.dw
 		self.one_batch_db += self.db
-		self.dx = np.dot(y,self.w.transpose())
+		self.dx = mnp.dot(y,self.w.transpose(),self.calculate)
 		return self.dx
 
 class Sigmoid(BaseLayer):
@@ -79,5 +81,3 @@ class SoftmaxLoss(BaseLayer):
 	def crossentropy(self,y,t):
 		delta = 1e-7
 		return -np.sum(t * np.log(y+delta))
-
-

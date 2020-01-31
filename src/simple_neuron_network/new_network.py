@@ -4,8 +4,11 @@ import layer
 import numpy as np
 
 class Network(object):
-	def __init__(self,layers):
+	def __init__(self,layers,calculate = 'numpy'):
 		self.layers = layers
+		#设定计算选定(numpy,my_python,my_c++)
+		for layer in range(1,len(self.layers)):
+			self.layers[layer].calculate = calculate
 		self.loss = None
 
 	def training(self, x_train, y_train, x_test, y_test, epochs, learning_rate,mini_batch_size):
