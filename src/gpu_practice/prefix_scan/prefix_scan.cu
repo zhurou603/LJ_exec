@@ -139,7 +139,6 @@ int main(int argc, char** argv){
 
   //对每个元素加上对应前一个block的和
   add<<<grids,elements_per_block>>>(dev_output_data, dev_block_sum,dev_input_data);
-  cudaDeviceSynchronize();
   //copy data from device
   cudaMemcpy(output_data, dev_output_data, data_bytes, cudaMemcpyDeviceToHost);
 
